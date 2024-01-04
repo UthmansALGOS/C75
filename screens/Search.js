@@ -18,6 +18,7 @@ export default class SearchScreen extends Component {
 		this.state = {
 			allTransactions: [],
 			searchText: '',
+			lastVisibleTransaction: null,
 		};
 	}
 	componentDidMount = async () => {
@@ -31,7 +32,8 @@ export default class SearchScreen extends Component {
 
 		querySnapShot.forEach((doc) => {
 			this.setState({
-				allTransactions: [...this.state.allTransactions, doc.data()] //spread operator
+				allTransactions: [...this.state.allTransactions, doc.data()] ,//spread operator
+				lastVisibleTransaction : doc
 			});
 		});
 	};
@@ -126,6 +128,8 @@ export default class SearchScreen extends Component {
 	};
 		
 	}
+
+	
 	render() {
 		const { searchText, allTransactions } = this.state;
 		return (
@@ -148,6 +152,8 @@ export default class SearchScreen extends Component {
 						data={allTransactions}
 						renderItem={this.renderItem}
 						keyExtractor={(item, index) => index.toString()}
+						onEndReached={()=>{this.fetchMoreTransactions(searchText)}}
+						onEndReachedThreshold={0.7}
 					/>
 				</View>
 			</View>
